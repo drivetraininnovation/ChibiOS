@@ -520,7 +520,7 @@ bool can_lld_start(CANDriver *canp) {
   canp->fdcan->IR     = (uint32_t)-1;
   canp->fdcan->IE     = FDCAN_IE_RF1NE | FDCAN_IE_RF1LE |
                         FDCAN_IE_RF0NE | FDCAN_IE_RF0LE |
-                        FDCAN_IE_TCE;
+                        FDCAN_IE_TCE | FDCAN_IE_BOE;
   canp->fdcan->TXBTIE = FDCAN_TXBTIE_TIE;
   canp->fdcan->ILE    = FDCAN_ILE_EINT0;
 
@@ -780,6 +780,11 @@ void can_lld_serve_interrupt(CANDriver *canp) {
   /* Overflow events.*/
   if (((ir & FDCAN_IR_RF0L) != 0U) || ((ir & FDCAN_IR_RF1L) != 0U)) {
     _can_error_isr(canp, CAN_OVERFLOW_ERROR);
+  }
+
+  /* Bus_off events.*/
+  if ((ir & FDCAN_IR_BO) != 0U)  {
+   _can_error_isr(canp, CAN_BUS_OFF_ERROR);
   }
 
   /* TX events.*/
