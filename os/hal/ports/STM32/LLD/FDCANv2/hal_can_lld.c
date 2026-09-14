@@ -611,8 +611,12 @@ void can_lld_transmit(CANDriver *canp, canmbx_t mailbox, const CANTxFrame *ctfp)
   /*
    * FIXME This sleep not needed if we send two frames with different SID/EID
    *       why?
+   *
+   * TESZT (DTI): az 1 ms-os alvás kikommentezve — a küldési ráta/jitter
+   * felső határának méréséhez. A backpressure a canTransmitTimeout
+   * is_tx_empty (TFFL) ciklusában marad. Visszaállításhoz: a sort visszakommentelni.
    */
-  chThdSleepS(OSAL_MS2I(1));
+  //chThdSleepS(OSAL_MS2I(1));
 }
 
 /**
